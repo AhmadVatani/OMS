@@ -6,7 +6,7 @@ RUN apk update && \
     mkdir -p /opt/java && \
     tar -xzf /tmp/jdk.tar.gz -C /opt/java && \
     rm /tmp/jdk.tar.gz
-ENV JAVA_HOME=/opt/java/jdk-24
+ENV JAVA_HOME=/opt/java
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 COPY . /usr/src/app
