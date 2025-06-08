@@ -14,7 +14,7 @@ ENV PATH="$JAVA_HOME/bin:$PATH"
 ## build the application
 WORKDIR /usr/src/app
 COPY . .
-RUN ./mvnw --batch-mode clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
 ## (optional) move the built artefact somewhere neat
 RUN mkdir -p /opt/app && \
