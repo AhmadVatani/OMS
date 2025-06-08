@@ -1,18 +1,24 @@
 FROM docker:dind
 
-RUN apk update && \
-    apk add curl && \
-    curl -Lo /tmp/jdk.tar.gz https://github.com/adoptium/temurin24-binaries/releases/download/jdk-24%2B36/OpenJDK24U-jdk_x64_alpine-linux_hotspot_24_36.tar.gz && \
-    mkdir -p /opt/java && \
-    tar -xzf /tmp/jdk.tar.gz -C /opt/java && \
-    rm /tmp/jdk.tar.gz
+## packages the wrapper needs (`bash`, `curl`, `tar`)
+RUN apk add --no-cache bash curl tar
+
+## install Temurin 24, stripping the top directory
+RUN mkdir -p /opt/java && \
+    curl -L https://github.com/adoptium/temurin24-binaries/releases/download/jdk-24%2B36/OpenJDK24U-jdk_x64_alpine-linux_hotspot_24_36.tar.gz \
+    | tar -xz --strip-components=1 -C /opt/java
+
 ENV JAVA_HOME=/opt/java
-ENV PATH=$JAVA_HOME/bin:$JAVA_HOME/bin/java:$PATH
+ENV PATH="$JAVA_HOME/bin:$PATH"
 
-COPY . /usr/src/app
-
+## build the application
 WORKDIR /usr/src/app
-RUN ./mvnw clean package -DskipTests
+COPY . .
+RUN ./mvnw --batch-mode clean package -DskipTests
 
-RUN mkdir /opt/app
+## (optional) move the built artefact somewhere neat
+RUN mkdir -p /opt/app && \
+    mv target/*.jar /opt/app/
+
 WORKDIR /opt/app
+CMD ["java","-jar","your-app.jar"]
