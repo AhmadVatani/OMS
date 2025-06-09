@@ -1,8 +1,8 @@
-FROM  ghcr.io/graalvm/jdk-community:24
+FROM ghcr.io/graalvm/jdk-community:24
 
-RUN microdnf install dnf
-RUN dnf install -y lz4 lz4-devel
-RUN lz4 --version
+RUN microdnf install dnf && \
+    dnf install -y lz4 lz4-devel && \
+    dnf clean all
 
 RUN mkdir /opt/app
 WORKDIR /opt/app
