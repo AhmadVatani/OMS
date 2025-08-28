@@ -9,7 +9,7 @@ RUN apt-get update \
     && su postgres -c "psql -c \"ALTER USER oms WITH SUPERUSER;\"" \
     && su postgres -c "psql -c \"CREATE DATABASE oms OWNER oms;\"" \
     && su postgres -c "psql -d oms -c \"GRANT ALL ON SCHEMA public TO oms;\"" \
-    && mvn clean package -DskipTests -Ddocker.skip=true \
+    && mvn clean package -DskipTests -Ddocker.skip=true -Ddb.port=5432 \
     && service postgresql stop \
     && apt-get purge -y postgresql \
     && rm -rf /var/lib/apt/lists/*
